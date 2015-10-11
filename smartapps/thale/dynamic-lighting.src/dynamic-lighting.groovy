@@ -35,15 +35,13 @@ preferences {
         input "toggleMode", "bool", title: "Work in toggle mode? If enabled, will turn lights on/off from triggers. If disabled, it will only turn on"
 	}
     section(hideable:true, hidden:true, "Advanced Light Values") {
-        input "lightThreshold", "number", title: "Don't turn on lights if outside brightness is more than X lux", defaultValue: 10001, required:true
-        input "lowLowLux", "number", title: "Low outside light bottom lux value", defaultValue:1, required:true
-        input "lowHighLux", "number", title: "Low outside light top lux value", defaultValue:800, required:true
         input "lowBrightness", "number", title: "Low outside light bulb brightness", defaultValue:100, required:true
-        input "medLowLux", "number", title: "Medium outside light bottom lux value", defaultValue:801, required:true
-        input "medHighLux", "number", title: "Medium outside light top lux value", defaultValue:2000, required:true
+        input "lowLuxThreshold", "number", title: "Low outside light top lux value", defaultValue:800, required:true
         input "medBrightness", "number", title: "Medium outside light bulb brightness", defaultValue:60, required:true
+        input "medLuxThreshold", "number", title: "Medium outside light top lux value", defaultValue:2000, required:true
         input "highBrightness", "number", title: "High outside light bulb brightness", defaultValue:10, required:true
-    }
+        input "lightThreshold", "number", title: "Don't turn on lights if outside brightness is more than X lux", defaultValue: 10001, required:true
+	}
 }
 
 def installed() {
@@ -81,13 +79,10 @@ def appHandler(evt) {
             lights?.on()
 
             //set the light value (defaults below)
-            //0 < lux <= 800: 100%
-            //800 < lux <= 2000: 60%
-            //2000 < lux <= 10000: 10%
-            if(lux > lowLowLux && lux <= lowHighLux) {
+            if(lux > 0 && lux <= lowLuxThreshold) {
                 lights?.setLevel(lowBrightness)
             }
-            else if(lux > medLowLux && lux <= medHighLux) {
+            else if(lux > lowLuxThreshold && lux <= medLuxThreshold) {
                 lights?.setLevel(medBrightness)
             }
             else {
