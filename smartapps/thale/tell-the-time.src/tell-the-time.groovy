@@ -28,6 +28,7 @@ preferences {
 	section {
     	input "switchButton", "capability.momentary", title: "When this button is pushed:"
 		input "sonos", "capability.musicPlayer", title: "On this Sonos player", required: true
+        input "volume", "number", title: "Temporarily change volume", description: "0-100%", required: false
 	}
 }
 
@@ -49,10 +50,15 @@ def initialize() {
 }
 
 def appHandler(evt) {
+	//sonos.refresh()
 	//log.debug "I got the time: ${now()}"
     Date currentDateTime = new Date()
     def currentTime = currentDateTime.format('h:mm a',TimeZone.getTimeZone('GMT-7')).toString()
     log.debug "The current time is ${currentTime}"
     state.sound = textToSpeech(currentDateTime.format('h:mm a',TimeZone.getTimeZone('GMT-7')).toString(), true)
-    sonos.playTrack(state.sound.uri)
+    //sonos.playTrack(state.sound.uri)
+    sonos.playTrackAndResume(state.sound.uri, state.sound.duration + 5, volume)
+    //schedule(now()+12000,sonos.play())
+	//sonos.play()
+    
 }
