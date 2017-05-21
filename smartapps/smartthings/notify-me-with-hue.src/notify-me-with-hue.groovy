@@ -14,6 +14,7 @@
  *
  *  Author: SmartThings
  *  Date: 2014-01-20
+ *  Updated: Tracy Hale 8/14/16
  */
 definition(
     name: "Notify Me With Hue",
@@ -52,6 +53,7 @@ preferences {
 			input "color", "enum", title: "Hue Color?", required: false, multiple:false, options: ["Red","Green","Blue","Yellow","Orange","Purple","Pink"]
 			input "lightLevel", "enum", title: "Light Level?", required: false, options: [[10:"10%"],[20:"20%"],[30:"30%"],[40:"40%"],[50:"50%"],[60:"60%"],[70:"70%"],[80:"80%"],[90:"90%"],[100:"100%"]]
 			input "duration", "number", title: "Duration Seconds?", required: false
+            input "clearAlert", "capability.momentary", title: "Or Clear Alert Button", required: false
 			//input "turnOn", "enum", title: "Turn On when Off?", required: false, options: ["Yes","No"]
 		}
 
@@ -95,6 +97,8 @@ def subscribeToEvents() {
 	if (timeOfDay) {
 		schedule(timeOfDay, scheduledTimeHandler)
 	}
+    
+    subscribe(clearAlert, "momentary.pushed", clearAlertHandler)
 }
 
 def eventHandler(evt) {
@@ -122,6 +126,10 @@ def scheduledTimeHandler() {
 
 def appTouchHandler(evt) {
 	takeAction(evt)
+}
+
+def clearAlertHandler(evt) {
+	resetHue()
 }
 
 private takeAction(evt) {
@@ -168,7 +176,11 @@ private takeAction(evt) {
 
 def setTimer()
 {
-	if(!duration) //default to 10 seconds
+	if(clearAlert)
+    {
+    	// do nothing, not based on a timer to reset
+    }
+	else if(!duration) //default to 10 seconds
 	{
 		log.debug "pause 10"
 		pause(10 * 1000)
