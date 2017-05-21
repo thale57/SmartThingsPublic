@@ -20,7 +20,6 @@ metadata {
 		capability "Temperature Measurement"
 		capability "Motion Sensor"
 		capability "Refresh"
-		capability "Polling"
 	}
 
 	tiles {
@@ -48,8 +47,8 @@ metadata {
 		}
 
 		standardTile("motion", "device.motion") {
-			state("inactive", label:'no motion', icon:"st.motion.motion.inactive", backgroundColor:"#ffffff")
-			state("active", label:'motion', icon:"st.motion.motion.active", backgroundColor:"#53a7c0")
+			state("inactive", label:'no motion', icon:"st.motion.motion.inactive", backgroundColor:"#cccccc")
+			state("active", label:'motion', icon:"st.motion.motion.active", backgroundColor:"#00A0DC")
 		}
 
 		standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat") {
@@ -68,6 +67,6 @@ def refresh() {
 
 void poll() {
 	log.debug "Executing 'poll' using parent SmartApp"
-	parent.pollChild(this)
+	parent.pollChild()
 
 }
